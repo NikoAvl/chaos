@@ -18,14 +18,15 @@ class Particula:
 
     
         
-    
+
     def gravedad_planeta(self,masa,distancia):
-        gravedad = (6.672*(10**(-11)))*(masa/(distancia**2))
+        G = (6.67*math.e-11*(6.68*math.e-12)**3/(5*math.e-31*(1.15*math.e-5)**2))
+        gravedad = G*(masa/(distancia**2)) #elevo la masa para que no sea diminuta 
         return gravedad
     
     def aplicar_fuerza_gravitatoria(self,particula_dos):
-        distancia_x = particula_dos.posicion[0] - self.posicion[0]
-        distancia_y = particula_dos.posicion[1] - self.posicion[1]
+        distancia_x = particula_dos.posicion[0] - self.posicion[0] #(x₂-x₁)²
+        distancia_y = particula_dos.posicion[1] - self.posicion[1] #(y₂-y₁)²
         distancia = max(math.sqrt(distancia_x**2 + distancia_y**2), 1) # √(x₂-x₁)² + (y₂-y₁)²
         direccion = [distancia_x / distancia, distancia_y    / distancia] 
 
@@ -65,10 +66,10 @@ posicion = [0,0]
 radio = 0
 masa = 0
 
-for particula in range(10):
+for particula in range(2):
     posicion = [random.randint(10, 590), random.randint(10, 590)]
     radio = random.randint(2,20)
-    masa =  random.randint(1, 5)
+    masa =  random.randint(10, 50)
     color = random.randint(0,3)
     particulas.append(Particula(posicion,radio,masa,colors[color]))
 
