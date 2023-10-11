@@ -35,7 +35,7 @@ class Particula:
 
         self.velocidad[0] += direccion[0] * fuerza_gravitatoria / self.masa
         self.velocidad[1] += direccion[1] * fuerza_gravitatoria / self.masa
-        print(self.velocidad)
+        
 
         
     def actualizar_posicion(self):
@@ -43,8 +43,7 @@ class Particula:
         self.posicion[0] += self.velocidad[0]
         self.posicion[1] += self.velocidad[1]
 
-        self.posicion[0] += 0.4
-        self.posicion[1] += 0.4
+        
         
 
         
@@ -57,9 +56,11 @@ class Particula:
         pygame.draw.circle(screen, self.color, (int(self.posicion[0]),int(self.posicion[1])),self.radio,0)
         
 def distancia_particulas(particula,particula_dos):
-    distancia_x = particula_dos.posicion[0] - particula.posicion[0] #(x₂-x₁)²
-    distancia_y = particula_dos.posicion[1] - particula.posicion[1] #(y₂-y₁)²
-    distancia = max(math.sqrt(distancia_x**2 + distancia_y**2), 1) # √(x₂-x₁)² + (y₂-y₁)²
+    distancia_x = (particula_dos.posicion[0]) - (particula.posicion[0]) #(x₂-x₁)²
+    distancia_y = (particula_dos.posicion[1]) - (particula.posicion[1]) #(y₂-y₁)²
+    distancia = max(math.sqrt((distancia_x**2) + (distancia_y**2)), 1) # √(x₂-x₁)² + (y₂-y₁)²
+    
+    print(distancia)
     return distancia
 
 def rebotar(particula,particula_dos):
@@ -69,8 +70,8 @@ def rebotar(particula,particula_dos):
         normal_x = distancia_x / longitud
         normal_y = distancia_y / longitud
         
-        velocidad_de_rebote_x = particula.velocidad[0] - 2 * (particula.velocidad[0] * normal_x) * normal_x
-        velocidad_de_rebote_y = particula.velocidad[1] - 2 * (particula.velocidad[1] * normal_y) * normal_y
+        velocidad_de_rebote_x = particula.velocidad[0] -2 * (particula.velocidad[0] * normal_x) * normal_x
+        velocidad_de_rebote_y = particula.velocidad[1] -2 * (particula.velocidad[1] * normal_y) * normal_y
 
         return [velocidad_de_rebote_x,velocidad_de_rebote_y]
 
@@ -86,14 +87,14 @@ tiempo = pygame.time.Clock()
 timer_res = pygame.TIMER_RESOLUTION
 dt = 0.1
 
-particulas = [Particula([0,0],0,100000000,(255,255,255))]
+particulas = []
 posicion = [0,0]
 radio = 0
 masa = 0
 
 for particula in range(2):
     posicion = [random.randint(10, 590), random.randint(10, 590)]
-    radio = random.randint(10,20)
+    radio = random.randint(10,30)
     masa =  radio**5
     color = random.randint(0,3)
     particulas.append(Particula(posicion,radio,masa,colors[color]))
@@ -108,6 +109,7 @@ while running:
         for particula_dos in particulas:
             if particula_dos != particula:
                 particula.aplicar_fuerza_gravitatoria(particula_dos)
+                
     
     for particula in particulas:
         for particula_dos in particulas:
@@ -135,11 +137,12 @@ while running:
 
     for particula in particulas:
         particula.mostrar()  # Dibuja cada partícula
+        
 
     for event in  pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    tiempo.tick(60)
+    tiempo.tick(20)
     t += dt
     pygame.display.flip()
 
