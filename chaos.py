@@ -7,12 +7,12 @@ import pygame
 pygame.init()
 
 class Particula:
-    def __init__(self,posicion,radio,masa,color):
+    def __init__(self,posicion,radio,masa,color,velocidad):
         self.posicion = posicion
         self.radio = radio
         self.color = color
         self.masa = masa
-        self.velocidad = [0,0] 
+        self.velocidad = velocidad
         
 
         
@@ -60,7 +60,6 @@ def distancia_particulas(particula,particula_dos):
     distancia_y = (particula_dos.posicion[1]) - (particula.posicion[1]) #(y₂-y₁)²
     distancia = max(math.sqrt((distancia_x**2) + (distancia_y**2)), 1) # √(x₂-x₁)² + (y₂-y₁)²
     
-    print(distancia)
     return distancia
 
 def rebotar(particula,particula_dos):
@@ -79,8 +78,8 @@ def rebotar(particula,particula_dos):
 
 #SCREEN
 colors = [(0,0,0),(255,96,208),(0,32,255),(0,192,0)]
-width = 650
-height = 650
+width = 1900
+height = 1000
 size = (width,height)
 screen = pygame.display.set_mode(size=size)
 tiempo = pygame.time.Clock()
@@ -92,12 +91,14 @@ posicion = [0,0]
 radio = 0
 masa = 0
 
-for particula in range(2):
-    posicion = [random.randint(10, 590), random.randint(10, 590)]
-    radio = random.randint(10,30)
-    masa =  radio**5
+for particula in range(1000):
+    posicion = [random.randint(500, 1500), random.randint(100, 800)]
+    radio = random.randint(10,40)
+    masa =  radio**4
     color = random.randint(0,3)
-    particulas.append(Particula(posicion,radio,masa,colors[color]))
+    velocidad = [random.uniform(-0.3,0.3), random.uniform(-0.3,0.3)]
+    print(velocidad[0],velocidad[1])
+    particulas.append(Particula(posicion,radio,masa,colors[color],velocidad))
 
 
 running  = True
@@ -142,7 +143,7 @@ while running:
     for event in  pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    tiempo.tick(20)
+    tiempo.tick(60)
     t += dt
     pygame.display.flip()
 
