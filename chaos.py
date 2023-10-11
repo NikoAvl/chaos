@@ -13,6 +13,7 @@ class Particula:
         self.color = color
         self.masa = masa
         self.velocidad = [0,0] 
+        
 
         
 
@@ -36,40 +37,64 @@ class Particula:
         self.velocidad[1] += direccion[1] * fuerza_gravitatoria / self.masa
         print(self.velocidad)
 
+        
     def actualizar_posicion(self):
         # Actualizar la posición según la velocidad
         self.posicion[0] += self.velocidad[0]
         self.posicion[1] += self.velocidad[1]
 
+        self.posicion[0] += 0.4
+        self.posicion[1] += 0.4
+        
+
+        
+        
+        
+
         
 
     def mostrar(self):
-        pygame.draw.circle(screen, self.color, (int(self.posicion[0]),int(self.posicion[1])),self.radio,1)
+        pygame.draw.circle(screen, self.color, (int(self.posicion[0]),int(self.posicion[1])),self.radio,0)
         
+def distancia_particulas(particula,particula_dos):
+    distancia_x = particula_dos.posicion[0] - particula.posicion[0] #(x₂-x₁)²
+    distancia_y = particula_dos.posicion[1] - particula.posicion[1] #(y₂-y₁)²
+    distancia = max(math.sqrt(distancia_x**2 + distancia_y**2), 1) # √(x₂-x₁)² + (y₂-y₁)²
+    return distancia
 
+def rebotar(particula,particula_dos):
+        distancia_x = particula_dos.posicion[0] - particula.posicion[0] #(x₂-x₁)²
+        distancia_y = particula_dos.posicion[1] - particula.posicion[1] #(y₂-y₁)²
+        longitud = distancia_particulas(particula,particula_dos)
+        normal_x = distancia_x / longitud
+        normal_y = distancia_y / longitud
+        
+        velocidad_de_rebote_x = particula.velocidad[0] - 2 * (particula.velocidad[0] * normal_x) * normal_x
+        velocidad_de_rebote_y = particula.velocidad[1] - 2 * (particula.velocidad[1] * normal_y) * normal_y
 
+        return [velocidad_de_rebote_x,velocidad_de_rebote_y]
 
 
 
 #SCREEN
 colors = [(0,0,0),(255,96,208),(0,32,255),(0,192,0)]
-width = 600
-height = 600
+width = 650
+height = 650
 size = (width,height)
 screen = pygame.display.set_mode(size=size)
 tiempo = pygame.time.Clock()
 timer_res = pygame.TIMER_RESOLUTION
 dt = 0.1
 
-particulas = []
+particulas = [Particula([0,0],0,100000000,(255,255,255))]
 posicion = [0,0]
 radio = 0
 masa = 0
 
 for particula in range(2):
     posicion = [random.randint(10, 590), random.randint(10, 590)]
-    radio = random.randint(2,20)
-    masa =  random.randint(10, 50)
+    radio = random.randint(10,20)
+    masa =  radio**5
     color = random.randint(0,3)
     particulas.append(Particula(posicion,radio,masa,colors[color]))
 
@@ -85,7 +110,26 @@ while running:
                 particula.aplicar_fuerza_gravitatoria(particula_dos)
     
     for particula in particulas:
-        particula.actualizar_posicion()
+        for particula_dos in particulas:
+            if particula_dos != particula:
+                distancia = distancia_particulas(particula,particula_dos)
+                if distancia < particula.radio + particula_dos.radio: 
+
+                    
+                    particula.velocidad = rebotar(particula,particula_dos)
+                    particula.actualizar_posicion()
+                        
+                    
+                    particula_dos.velocidad = rebotar(particula,particula_dos)
+                    particula.actualizar_posicion()
+
+                        
+                        
+
+                else:
+                    particula.actualizar_posicion()
+
+        
 
     screen.fill((255,255,255))
 
